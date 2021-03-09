@@ -16,6 +16,7 @@ fwupdplugin_src = [
   'fu-dfuse-firmware.c',    # fuzzing
   'fu-fmap-firmware.c',     # fuzzing
   'fu-hwids.c',
+  'fu-ifd-bios.c',          # fuzzing
   'fu-ifd-common.c',        # fuzzing
   'fu-ifd-firmware.c',      # fuzzing
   'fu-ifd-image.c',         # fuzzing
@@ -26,6 +27,10 @@ fwupdplugin_src = [
   'fu-security-attrs.c',
   'fu-smbios.c',
   'fu-srec-firmware.c',     # fuzzing
+  'fu-efi-common.c',        # fuzzing
+  'fu-efi-firmware-file.c', # fuzzing
+  'fu-efi-firmware-filesystem.c', # fuzzing
+  'fu-efi-firmware-volume.c',     # fuzzing
   'fu-efi-signature.c',
   'fu-efi-signature-list.c',
   'fu-efivar.c',
@@ -54,6 +59,7 @@ fwupdplugin_headers = [
   'fu-fmap-firmware.h',
   'fu-dfuse-firmware.h',
   'fu-hwids.h',
+  'fu-ifd-bios.h',
   'fu-ifd-common.h',
   'fu-ifd-firmware.h',
   'fu-ifd-image.h',
@@ -64,6 +70,10 @@ fwupdplugin_headers = [
   'fu-security-attrs.h',
   'fu-smbios.h',
   'fu-srec-firmware.h',
+  'fu-efi-common.h',
+  'fu-efi-firmware-file.h',
+  'fu-efi-firmware-filesystem.h',
+  'fu-efi-firmware-volume.h',
   'fu-efi-signature.h',
   'fu-efi-signature-list.h',
   'fu-efivar.h',

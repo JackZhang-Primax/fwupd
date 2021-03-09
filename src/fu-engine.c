@@ -65,8 +65,12 @@
 
 #include "fu-dfu-firmware.h"
 #include "fu-dfuse-firmware.h"
+#include "fu-efi-firmware-filesystem.h"
+#include "fu-efi-firmware-file.h"
+#include "fu-efi-firmware-volume.h"
 #include "fu-fmap-firmware.h"
 #include "fu-ifd-firmware.h"
+#include "fu-ifd-bios.h"
 #include "fu-ihex-firmware.h"
 #include "fu-srec-firmware.h"
 
@@ -6442,10 +6446,14 @@ fu_engine_load (FuEngine *self, FuEngineLoadFlags flags, GError **error)
 
 	/* add the "built-in" firmware types */
 	fu_engine_add_firmware_gtype (self, "raw", FU_TYPE_FIRMWARE);
+	fu_engine_add_firmware_gtype (self, "efi-firmware-file", FU_TYPE_EFI_FIRMWARE_FILE);
+	fu_engine_add_firmware_gtype (self, "efi-firmware-filesystem", FU_TYPE_EFI_FIRMWARE_FILESYSTEM);
+	fu_engine_add_firmware_gtype (self, "efi-firmware-volume", FU_TYPE_EFI_FIRMWARE_VOLUME);
 	fu_engine_add_firmware_gtype (self, "dfu", FU_TYPE_DFU_FIRMWARE);
 	fu_engine_add_firmware_gtype (self, "dfuse", FU_TYPE_DFUSE_FIRMWARE);
 	fu_engine_add_firmware_gtype (self, "fmap", FU_TYPE_FMAP_FIRMWARE);
 	fu_engine_add_firmware_gtype (self, "ifd", FU_TYPE_IFD_FIRMWARE);
+	fu_engine_add_firmware_gtype (self, "ifd-bios", FU_TYPE_IFD_BIOS);
 	fu_engine_add_firmware_gtype (self, "ihex", FU_TYPE_IHEX_FIRMWARE);
 	fu_engine_add_firmware_gtype (self, "srec", FU_TYPE_SREC_FIRMWARE);
 	fu_engine_add_firmware_gtype (self, "smbios", FU_TYPE_SMBIOS);

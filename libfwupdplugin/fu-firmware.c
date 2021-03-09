@@ -476,10 +476,11 @@ fu_firmware_get_bytes (FuFirmware *self, GError **error)
 	FuFirmwarePrivate *priv = GET_PRIVATE (self);
 	g_return_val_if_fail (FU_IS_FIRMWARE (self), NULL);
 	if (priv->bytes == NULL) {
-		g_set_error_literal (error,
-				     FWUPD_ERROR,
-				     FWUPD_ERROR_NOT_FOUND,
-				     "no payload set");
+		g_set_error (error,
+			     FWUPD_ERROR,
+			     FWUPD_ERROR_NOT_FOUND,
+			     "no payload set for %s",
+			     fu_firmware_get_id (self));
 		return NULL;
 	}
 	return g_bytes_ref (priv->bytes);
