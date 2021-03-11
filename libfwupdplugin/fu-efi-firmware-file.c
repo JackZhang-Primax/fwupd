@@ -233,7 +233,18 @@ fu_efi_firmware_file_parse (FuFirmware *firmware,
 					   error);
 	if (blob == NULL)
 		return FALSE;
-	fu_firmware_set_bytes (firmware, blob);
+
+	/* add fv-image */
+	if (priv->type == FU_EFI_FIRMWARE_FILE_TYPE_FIRMWARE_VOLUME_IMAGE) {
+		g_autoptr(FuFirmware) img = fu_efi_firmware_section_new ();
+
+		//FIXME use firmware_size to add each section
+		if (!fu_firmware_parse (img, blob, flags, error))
+			return FALSE;
+		fu_firmware_add_image (firmware, img);
+	} else {
+		fu_firmware_set_bytes (firmware, blob);
+	}
 
 	/* verify data checksum */
 	if ((priv->attrib & FU_EFI_FIRMWARE_FILE_ATTRIB_CHECKSUM) > 0 &&
