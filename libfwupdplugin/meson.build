@@ -30,6 +30,7 @@ fwupdplugin_src = [
   'fu-efi-common.c',        # fuzzing
   'fu-efi-firmware-file.c', # fuzzing
   'fu-efi-firmware-filesystem.c', # fuzzing
+  'fu-efi-firmware-section.c',    # fuzzing
   'fu-efi-firmware-volume.c',     # fuzzing
   'fu-efi-signature.c',
   'fu-efi-signature-list.c',
@@ -73,6 +74,7 @@ fwupdplugin_headers = [
   'fu-efi-common.h',
   'fu-efi-firmware-file.h',
   'fu-efi-firmware-filesystem.h',
+  'fu-efi-firmware-section.h',
   'fu-efi-firmware-volume.h',
   'fu-efi-signature.h',
   'fu-efi-signature-list.h',
