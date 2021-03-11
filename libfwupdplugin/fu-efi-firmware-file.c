@@ -12,9 +12,8 @@
 #include "fu-efi-firmware-file.h"
 
 typedef struct {
-	fwupd_guid_t		 guid;
-	guint8			 attrib;
 	guint8			 type;
+	guint8			 attrib;
 } FuEfiFirmwareFilePrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (FuEfiFirmwareFile, fu_efi_firmware_file, FU_TYPE_FIRMWARE)
@@ -80,7 +79,7 @@ fu_efi_firmware_file_type_to_string (guint8 type)
 	if (type == FU_EFI_FIRMWARE_FILE_TYPE_MM)
 		return "mm";
 	if (type == FU_EFI_FIRMWARE_FILE_TYPE_FIRMWARE_VOLUME_IMAGE)
-		return "firmware-volume-firmware";
+		return "firmware-volume-image";
 	if (type == FU_EFI_FIRMWARE_FILE_TYPE_COMBINED_MM_DXE)
 		return "combined-mm-dxe";
 	if (type == FU_EFI_FIRMWARE_FILE_TYPE_MM_CORE)
@@ -99,26 +98,19 @@ fu_efi_firmware_file_to_string (FuFirmware *firmware, guint idt, GString *str)
 {
 	FuEfiFirmwareFile *self = FU_EFI_FIRMWARE_FILE (firmware);
 	FuEfiFirmwareFilePrivate *priv = GET_PRIVATE (self);
-	g_autofree gchar *guid_str = NULL;
-	const gchar *name;
+	const gchar *type_name = fu_efi_firmware_file_type_to_string (priv->type);
+	const gchar *guid_name = fu_efi_guid_to_name (fu_firmware_get_id (firmware));
 
-	guid_str = fwupd_guid_to_string (&priv->guid, FWUPD_GUID_FLAG_MIXED_ENDIAN);
-	name = fu_efi_guid_to_name (guid_str);
-	if (name != NULL) {
-		g_autofree gchar *tmp = g_strdup_printf ("%s [%s]", guid_str, name);
-		fu_common_string_append_kv (str, idt, "Guid", tmp);
-	} else {
-		fu_common_string_append_kv (str, idt, "Guid", guid_str);
-	}
-	name = fu_efi_firmware_file_type_to_string (priv->type);
-	if (name != NULL) {
-		g_autofree gchar *tmp = g_strdup_printf ("%s [0x%02x]", name, priv->type);
+	if (guid_name != NULL)
+		fu_common_string_append_kv (str, idt, "Name", guid_name);
+	if (priv->attrib != 0x0)
+		fu_common_string_append_kx (str, idt, "Attrib", priv->attrib);
+	if (type_name != NULL) {
+		g_autofree gchar *tmp = g_strdup_printf ("%s [0x%02x]", type_name, priv->type);
 		fu_common_string_append_kv (str, idt, "Type", tmp);
 	} else {
 		fu_common_string_append_kx (str, idt, "Type", priv->type);
 	}
-	if (priv->attrib != 0x0)
-		fu_common_string_append_kx (str, idt, "Attrib", priv->attrib);
 }
 
 static guint8
@@ -165,14 +157,18 @@ fu_efi_firmware_file_parse (FuFirmware *firmware,
 	guint8 data_checksum = 0x0;
 	guint8 hdr_checksum = 0x0;
 	guint8 img_state = 0x0;
+	fwupd_guid_t guid = { 0x0 };
 	const guint8 *buf = g_bytes_get_data (fw, &bufsz);
+	g_autofree gchar *guid_str = NULL;
 	g_autoptr(GBytes) blob = NULL;
 
 	/* header */
-	if (!fu_memcpy_safe ((guint8 *) &priv->guid, sizeof(priv->guid), 0x0,	/* dst */
+	if (!fu_memcpy_safe ((guint8 *) &guid, sizeof(guid), 0x0,		/* dst */
 			     buf, bufsz, FU_EFI_FIRMWARE_FILE_OFFSET_NAME,	/* src */
-			     sizeof(priv->guid), error))
+			     sizeof(guid), error))
 		return FALSE;
+	guid_str = fwupd_guid_to_string (&guid, FWUPD_GUID_FLAG_MIXED_ENDIAN);
+	fu_firmware_set_id (firmware, guid_str);
 	if (!fu_common_read_uint8_safe (buf, bufsz,
 					FU_EFI_FIRMWARE_FILE_OFFSET_STATE,
 					&img_state, error))
@@ -266,6 +262,7 @@ fu_efi_firmware_file_write (FuFirmware *firmware, GError **error)
 {
 	FuEfiFirmwareFile *self = FU_EFI_FIRMWARE_FILE (firmware);
 	FuEfiFirmwareFilePrivate *priv = GET_PRIVATE (self);
+	fwupd_guid_t guid = { 0x0 };
 	g_autoptr(GByteArray) buf = g_byte_array_new ();
 	g_autoptr(GBytes) blob = NULL;
 	g_autoptr(GBytes) hdr_blob = NULL;
@@ -276,7 +273,10 @@ fu_efi_firmware_file_write (FuFirmware *firmware, GError **error)
 		return NULL;
 
 	/* header */
-	g_byte_array_append (buf, (guint8 *) &priv->guid, sizeof(priv->guid));
+	if (!fwupd_guid_from_string (fu_firmware_get_id (firmware), &guid,
+				     FWUPD_GUID_FLAG_MIXED_ENDIAN, error))
+		return NULL;
+	g_byte_array_append (buf, (guint8 *) &guid, sizeof(guid));
 	fu_byte_array_append_uint8 (buf, 0x0); /* hdr_checksum */
 	fu_byte_array_append_uint8 (buf, fu_efi_firmware_file_data_checksum8 (blob));
 	fu_byte_array_append_uint8 (buf, priv->type); /* data_checksum */
@@ -301,9 +301,6 @@ fu_efi_firmware_file_build (FuFirmware *firmware, XbNode *n, GError **error)
 	guint64 tmp;
 
 	/* simple properties */
-	if (!fwupd_guid_from_string (fu_firmware_get_id (firmware), &priv->guid,
-				     FWUPD_GUID_FLAG_MIXED_ENDIAN, error))
-		return FALSE;
 	tmp = xb_node_query_text_as_uint (n, "type", NULL);
 	if (tmp != G_MAXUINT64 && tmp <= G_MAXUINT8)
 		priv->type = tmp;

@@ -50,6 +50,9 @@ fu_ifd_firmware_to_string (FuFirmware *firmware, guint idt, GString *str)
 {
 	FuEfiFirmwareVolume *self = FU_EFI_FIRMWARE_VOLUME (firmware);
 	FuEfiFirmwareVolumePrivate *priv = GET_PRIVATE (self);
+	const gchar *guid_name = fu_efi_guid_to_name (fu_firmware_get_id (firmware));
+	if (guid_name != NULL)
+		fu_common_string_append_kv (str, idt, "Name", guid_name);
 	fu_common_string_append_kx (str, idt, "Attrs", priv->attrs);
 }
 

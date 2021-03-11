@@ -18,4 +18,6 @@
 #define FU_EFI_FIRMWARE_VOLUME_GUID_PFH1	"16b45da2-7d70-4aea-a58d-760e9ecb841d"
 #define FU_EFI_FIRMWARE_VOLUME_GUID_PFH2	"e360bdba-c3ce-46be-8f37-b231e5cb9f35"
 
+#define FU_EFI_FIRMWARE_FILE_FV_IMAGE		"4e35fd93-9c72-4c15-8c4b-e77f1db2d792"
+
 const gchar	*fu_efi_guid_to_name		(const gchar	*guid);

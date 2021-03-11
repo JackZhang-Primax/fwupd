@@ -59,6 +59,7 @@ fu_efi_firmware_filesystem_parse (FuFirmware *firmware,
 					(guint) offset);
 			return FALSE;
 		}
+		fu_firmware_set_offset (firmware, offset);
 		fu_firmware_add_image (firmware, img);
 
 		/* next! */

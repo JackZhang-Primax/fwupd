@@ -764,6 +764,8 @@ LIBFWUPDPLUGIN_1.6.0 {
     fu_efi_firmware_file_new;
     fu_efi_firmware_filesystem_get_type;
     fu_efi_firmware_filesystem_new;
+    fu_efi_firmware_section_get_type;
+    fu_efi_firmware_section_new;
     fu_efi_firmware_volume_get_type;
     fu_efi_firmware_volume_new;
     fu_efi_guid_to_name;
