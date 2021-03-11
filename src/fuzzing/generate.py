@@ -21,7 +21,7 @@ if __name__ == "__main__":
         ("ebitdo.builder.xml", "ebitdo.dat"),
         ("efi-firmware-file.builder.xml", "efi-file.bin"),
         ("efi-firmware-filesystem.builder.xml", "efi-filesystem.bin"),
-        ("efi-firmware-volume.builder.xml", "efi-firmware-volume.bin"),
+        ("efi-firmware-volume.builder.xml", "efi-volume.bin"),
         ("elantp.builder.xml", "elantp.bin"),
         ("fmap.builder.xml", "fmap.bin"),
         ("fmap-offset.builder.xml", "fmap-offset.bin"),
