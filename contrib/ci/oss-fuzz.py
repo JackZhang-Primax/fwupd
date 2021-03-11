@@ -282,14 +282,14 @@ def _build(bld: Builder) -> None:
         built_objs.append(bld.compile("fwupd/libfwupdplugin/fu-fuzzer-main.c"))
 
     # built in formats
-    for fuzzer, pattern in [
-        ("dfuse", "fu-dfuse-firmware"),
-        ("efi-firmware-filesystem", "fu-efi-firmware-filesystem"),
-        ("efi-firmware-volume", "fu-efi-firmware-volume"),
-        ("fmap", "fu-fmap-firmware"),
-        ("ifd", "fu-ifd-firmware"),
-        ("ihex", "fu-ihex-firmware"),
-        ("srec", "fu-srec-firmware"),
+    for fuzzer, pattern, globstr in [
+        ("dfuse", "fu-dfuse-firmware", "dfuse*"),
+        ("efi-firmware-filesystem", "fu-efi-firmware-filesystem", "efi-filesystem*"),
+        ("efi-firmware-volume", "fu-efi-firmware-volume", "efi-volume*"),
+        ("fmap", "fu-fmap-firmware", "fmap*"),
+        ("ifd", "fu-ifd-firmware", "ifd*"),
+        ("ihex", "fu-ihex-firmware", "ihex*"),
+        ("srec", "fu-srec-firmware", "srec*"),
     ]:
         src = bld.substitute(
             "fwupd/libfwupdplugin/fu-fuzzer-firmware.c.in",
@@ -301,7 +301,7 @@ def _build(bld: Builder) -> None:
         bld.link([bld.compile(src)] + built_objs, "{}_fuzzer".format(fuzzer))
         bld.makezip(
             "{}_fuzzer_seed_corpus.zip".format(fuzzer),
-            "fwupd/src/fuzzing/firmware/{}*".format(fuzzer),
+            "fwupd/src/fuzzing/firmware/{}".format(globstr),
         )
 
     # plugins
