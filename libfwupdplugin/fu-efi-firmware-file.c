@@ -10,6 +10,7 @@
 
 #include "fu-efi-common.h"
 #include "fu-efi-firmware-file.h"
+#include "fu-efi-firmware-section.h"
 
 typedef struct {
 	guint8			 type;
