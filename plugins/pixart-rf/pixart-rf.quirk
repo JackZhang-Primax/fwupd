@@ -34,6 +34,10 @@ Plugin = pixart_rf
 [HIDRAW\VEN_0461&DEV_4EEE]
 Plugin = pixart_rf
 
+# Primax Black Mocha KB
+[HIDRAW\VEN_0461&DEV_4EFA]
+Plugin = pixart_rf
+
 # Primax UK KB
 [HIDRAW\VEN_0461&DEV_4EF4]
 Plugin = pixart_rf
